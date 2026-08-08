@@ -74,8 +74,17 @@ class Room:
         print(f"Capacity: {self.capacity} people")
         print(f"Status: {self.status}")
 
-       
 
+rooms = []
+capacities = [2,2,3,3,4,4,5,5,6,6]
 
+for floor in range(1,13):
+    for room_index in range(10):
 
-                       
+        room_number = floor * 100 + (room_index + 1)
+        capacity = capacities[room_index]
+        room=Room(room_number = room_number,floor = floor,capacity = capacity)
+        rooms.append(room)
+
+print(f"total rooms :{len(rooms)}")
+
