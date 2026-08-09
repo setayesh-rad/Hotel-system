@@ -395,4 +395,89 @@ class Reservation:
         self.services = []
 
 
- 
+class Service:
+
+    def __init__(
+        self,
+        reservation_id,
+        service_type,
+        date,
+        start_time,
+        duration,
+        price
+    ):
+        self.reservation_id = reservation_id
+        self.service_type = service_type
+        self.date = date
+        self.start_time = start_time
+        self.price = price
+
+
+
+def select_services(resevation_id):
+    services = []
+Translator = input("do you want a translator?(yes/no)")
+if Translator == "yes":
+    date = input("enter date")
+    start_time = input("Enter start time:")
+
+    service = Service(reservation_id = reservation_id,service_type = "Translator",date = date ,start_time = start_time,price = 4)
+    services.append(service)
+
+
+
+driver = input("Do you want a driver? (yes/no): ")
+
+if driver == "yes":
+    car_type = input("Choose car type (normal/luxury): ")
+    date = input("Enter date: ")
+    start_time = input("Enter start time: ")
+
+    if car_type == "normal":
+        price = 2
+    elif car_type == "luxury":
+        price = 3.5
+    else:
+        raise ValueError("Invalid car type")
+
+    service = Service(
+        reservation_id=reservation_id,
+        service_type="DRIVER",
+        date=date,
+        start_time=start_time,
+        price=price
+    )
+
+    services.append(service)
+
+
+
+tour_guide = input("Do you want a tour guide? (yes/no): ")
+
+if tour_guide == "yes":
+    date = input("Enter date: ")
+    start_time = input("Enter start time: ")
+    
+
+    service = Service(
+        reservation_id=reservation_id,
+        service_type="TOUR_GUIDE",
+        date=date,
+        start_time=start_time,
+        price=5
+    )
+
+    services.append(service)
+
+
+
+    food = input("do you want food service? (yes/no):")
+    if food == "yes":
+        date = input("Enter date:")
+        meal = input("choose meal (breakfast/lunch/dinner):")
+
+        service = Service(reservation_id=Reservation_id,service_type="FOOD",date=date,start_time=None,price=0)
+        services.append(service)
+
+
+    
