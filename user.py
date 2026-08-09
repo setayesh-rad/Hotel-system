@@ -480,4 +480,8 @@ if tour_guide == "yes":
         services.append(service)
 
 
-    
+
+Reservation.services = select_services(Reservation.reservation_id)
+for service in Reservation.services:
+    print(service.service_type)
+
