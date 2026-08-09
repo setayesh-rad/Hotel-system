@@ -326,6 +326,7 @@ class FinancialManager(Employee):
 
 
 
+
 class Manager(User):
 
     def __init__(
@@ -347,3 +348,51 @@ class Manager(User):
         self.age = age
         self.national_id = national_id
         self.phone = phone                                      
+
+
+class PersonalInfo:
+
+    def __init__(
+        self,
+        guest_id,
+        first_name,
+        last_name,
+        age,
+        national_id,
+        phone,
+        address
+    ):
+        self.guest_id = guest_id
+        self.first_name = first_name
+        self.last_name = last_name
+        self.age = age
+        self.national_id = national_id
+        self.phone = phone
+        self.address = address
+
+
+
+
+class Reservation:
+
+    def __init__(
+        self,
+        reservation_id,
+        guests: list[PersonalInfo],
+        number_of_guests,
+        room,
+        number_of_nights
+    ):
+        self.reservation_id = reservation_id
+        for guest in guests:
+            if not isinstance(guest,PersonalInfo):
+                raise TypeError("guest must be a personalinfo object")
+        self.guests = guests
+
+        self.number_of_guests = number_of_guests
+        self.room = room
+        self.number_of_nights = number_of_nights
+        self.services = []
+
+
+ 
