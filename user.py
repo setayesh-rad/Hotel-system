@@ -169,6 +169,11 @@ class Housekeeper(Employee):
             password
         )
 
+        self.shift = {}
+        self.floor = None
+        self.room_schedule = {}
+
+
 
 
 class Receptionist(Employee):
@@ -403,7 +408,6 @@ class Service:
         service_type,
         date,
         start_time,
-        duration,
         price
     ):
         self.reservation_id = reservation_id
@@ -414,74 +418,233 @@ class Service:
 
 
 
-def select_services(resevation_id):
+def select_services(reservation_id):
+
     services = []
-Translator = input("do you want a translator?(yes/no)")
-if Translator == "yes":
-    date = input("enter date")
-    start_time = input("Enter start time:")
 
-    service = Service(reservation_id = reservation_id,service_type = "Translator",date = date ,start_time = start_time,price = 4)
-    services.append(service)
+    translator = input("Do you want a translator? (yes/no): ")
 
+    if translator == "yes":
+        date = input("Enter date: ")
+        start_time = input("Enter start time: ")
 
+        service = Service(
+            reservation_id=reservation_id,
+            service_type="TRANSLATOR",
+            date=date,
+            start_time=start_time,
+            price=4
+        )
 
-driver = input("Do you want a driver? (yes/no): ")
-
-if driver == "yes":
-    car_type = input("Choose car type (normal/luxury): ")
-    date = input("Enter date: ")
-    start_time = input("Enter start time: ")
-
-    if car_type == "normal":
-        price = 2
-    elif car_type == "luxury":
-        price = 3.5
-    else:
-        raise ValueError("Invalid car type")
-
-    service = Service(
-        reservation_id=reservation_id,
-        service_type="DRIVER",
-        date=date,
-        start_time=start_time,
-        price=price
-    )
-
-    services.append(service)
-
-
-
-tour_guide = input("Do you want a tour guide? (yes/no): ")
-
-if tour_guide == "yes":
-    date = input("Enter date: ")
-    start_time = input("Enter start time: ")
-    
-
-    service = Service(
-        reservation_id=reservation_id,
-        service_type="TOUR_GUIDE",
-        date=date,
-        start_time=start_time,
-        price=5
-    )
-
-    services.append(service)
-
-
-
-    food = input("do you want food service? (yes/no):")
-    if food == "yes":
-        date = input("Enter date:")
-        meal = input("choose meal (breakfast/lunch/dinner):")
-
-        service = Service(reservation_id=Reservation_id,service_type="FOOD",date=date,start_time=None,price=0)
         services.append(service)
 
+    driver = input("Do you want a driver? (yes/no): ")
+
+    if driver == "yes":
+        car_type = input("Choose car type (normal/luxury): ")
+        date = input("Enter date: ")
+        start_time = input("Enter start time: ")
+
+        if car_type == "normal":
+            price = 2
+
+        elif car_type == "luxury":
+            price = 3.5
+
+        else:
+            raise ValueError("Invalid car type")
+
+        service = Service(
+            reservation_id=reservation_id,
+            service_type="DRIVER",
+            date=date,
+            start_time=start_time,
+            price=price
+        )
+
+        services.append(service)
+
+    tour_guide = input("Do you want a tour guide? (yes/no): ")
+
+    if tour_guide == "yes":
+        date = input("Enter date: ")
+        start_time = input("Enter start time: ")
+
+        service = Service(
+            reservation_id=reservation_id,
+            service_type="TOUR_GUIDE",
+            date=date,
+            start_time=start_time,
+            price=5
+        )
+
+        services.append(service)
+
+    food = input("Do you want food service? (yes/no): ")
+
+    if food == "yes":
+        date = input("Enter date: ")
+        meal = input("Choose meal (breakfast/lunch/dinner): ")
+
+        service = Service(
+            reservation_id=reservation_id,
+            service_type="FOOD",
+            date=date,
+            start_time=None,
+            price=0
+        )
+
+        services.append(service)
+
+    return services
 
 
-Reservation.services = select_services(Reservation.reservation_id)
-for service in Reservation.services:
+reservation.services = select_services(reservation.reservation_id)
+for service in reservation.services:
     print(service.service_type)
 
+
+
+
+
+def housekeeper_schedule(housekeepers):
+
+    long_count = 25
+    night_count = 10
+    off_count = 15
+
+    for day in range(1, 31):
+
+        daily_shifts = []
+
+        daily_shifts.extend(["LONG"] * long_count)
+        daily_shifts.extend(["NIGHT"] * night_count)
+        daily_shifts.extend(["OFF"] * off_count)
+
+        shift_offset = (day - 1) % len(housekeepers)
+
+        daily_shifts = (
+            daily_shifts[shift_offset:]
+            + daily_shifts[:shift_offset]
+        )
+
+        for employee_index, housekeeper in enumerate(housekeepers):
+
+            housekeeper.shift[day] = daily_shifts[employee_index]
+
+
+
+def get_housekeepers_by_shift(housekeepers, day, shift_type):
+
+    selected_housekeepers = []
+
+    for housekeeper in housekeepers:
+
+        shift = housekeeper.shift[day]
+
+        if shift == shift_type:
+            selected_housekeepers.append(housekeeper)
+
+    return selected_housekeepers
+
+
+
+def assign_housekeeper_floors(housekeepers, month):
+
+    number_of_floors = 12
+
+    for index, housekeeper in enumerate(housekeepers):
+
+        floor = ((index + month - 1) % number_of_floors) + 1
+
+        housekeeper.floor = floor
+
+
+def assign_rooms_to_housekeepers(housekeepers, rooms, day):
+
+    long_housekeepers = get_housekeepers_by_shift(
+        housekeepers,
+        day,
+        "LONG"
+    )
+
+    night_housekeepers = get_housekeepers_by_shift(
+        housekeepers,
+        day,
+        "NIGHT"
+    )
+
+    working_housekeepers = long_housekeepers + night_housekeepers
+
+    if not working_housekeepers:
+        return
+
+    rooms_by_floor = {}
+
+    for room in rooms:
+
+        if room.floor not in rooms_by_floor:
+            rooms_by_floor[room.floor] = []
+
+        rooms_by_floor[room.floor].append(room)
+
+    for floor, floor_rooms in rooms_by_floor.items():
+
+        floor_housekeepers = [
+            housekeeper
+            for housekeeper in working_housekeepers
+            if housekeeper.floor == floor
+        ]
+
+        if not floor_housekeepers:
+            continue
+
+        for housekeeper in floor_housekeepers:
+            housekeeper.room_schedule[day] = []
+
+        for index, room in enumerate(floor_rooms):
+
+            housekeeper = floor_housekeepers[
+                index % len(floor_housekeepers)
+            ]
+
+            housekeeper.room_schedule[day].append(room)
+
+
+
+
+CLEANING_CHECKLIST = ["MAKE_BED","CLEAN_BATHROOM","CLEAN_WINDOWS","VACUUM_FLOOR",
+                      "EMPTY_TRASH", "DUST_FURNITURE"]
+
+
+def create_cleaning_checklist(room):
+
+    room.cleaning_checklist = {
+        task: False
+        for task in CLEANING_CHECKLIST
+    }
+
+
+
+def show_cleaning_checklist(room):
+
+    print(f"\nCleaning checklist for room {room.room_number}")
+
+    for task, completed in room.cleaning_checklist.items():
+
+        status = "DONE" if completed else "NOT DONE"
+
+        print(f"{task}: {status}")
+
+
+
+def complete_cleaning_task(room, task):
+
+    if task not in room.cleaning_checklist:
+        raise ValueError("Invalid cleaning task")
+
+    room.cleaning_checklist[task] = True
+
+
+
+            
