@@ -193,7 +193,7 @@ class Receptionist(Employee):
         work_schedule,
         salary,
         username,
-        password
+        password,
     ):
         super().__init__(
             employee_id,
@@ -210,7 +210,10 @@ class Receptionist(Employee):
             salary,
             username,
             password
-        )  
+        ) 
+
+        self.shift = {}
+         
 
 
 
@@ -647,4 +650,42 @@ def complete_cleaning_task(room, task):
 
 
 
-            
+def receptionist_schedule(receptionists):
+
+    long_count = 11
+    night_count = 5
+    off_count = 6
+
+    for day in range(1, 31):
+
+        daily_shifts = []
+
+        daily_shifts.extend(["LONG"] * long_count)
+        daily_shifts.extend(["NIGHT"] * night_count)
+        daily_shifts.extend(["OFF"] * off_count)
+
+        shift_offset = (day - 1) % len(receptionists)
+
+        daily_shifts = (
+            daily_shifts[shift_offset:]
+            + daily_shifts[:shift_offset]
+        )
+
+        for employee_index, receptionist in enumerate(receptionists):
+
+            receptionist.shift[day] = daily_shifts[employee_index]
+
+
+
+def get_receptionists_by_shift(receptionists, day, shift_type):
+
+    selected_receptionists = []
+
+    for receptionist in receptionists:
+
+        shift = receptionist.shift[day]
+
+        if shift == shift_type:
+            selected_receptionists.append(receptionist)
+
+    return selected_receptionists           
