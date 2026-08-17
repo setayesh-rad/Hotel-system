@@ -130,6 +130,7 @@ class Driver(Employee):
         self.license_plate = license_plate
         self.car_model = car_model
         self.car_type = car_type
+        self.availability = []
 
 
 
@@ -255,6 +256,7 @@ class Translator(Employee):
         )
 
         self.languages = languages
+        self.availability = []
 
 
 
@@ -293,6 +295,7 @@ class TourGuide(Employee):
             username,
             password
         )
+        self.availability = []
 
 
 
@@ -779,3 +782,7 @@ def kitchen_assistant_schedule(kitchen_assistants):
             assistant.shift[day] = "OFF"
 
 
+
+def set_available(employee , days):
+    employee.availability = days
+    
