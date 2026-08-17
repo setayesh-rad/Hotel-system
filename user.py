@@ -421,6 +421,49 @@ class Service:
 
 
 
+
+class Kitchenassistant(Employee):
+
+    def __init__(
+        self,
+        employee_id,
+        first_name,
+        last_name,
+        age,
+        national_id,
+        address,
+        phone,
+        years_of_experience,
+        hire_date,
+        job_title,
+        work_schedule,
+        salary,
+        username,
+        password
+    ):
+
+        super().__init__(
+            employee_id,
+            first_name,
+            last_name,
+            age,
+            national_id,
+            address,
+            phone,
+            years_of_experience,
+            hire_date,
+            job_title,
+            work_schedule,
+            salary,
+            username,
+            password
+        )
+
+        self.shift = {}
+
+
+
+
 def select_services(reservation_id):
 
     services = []
@@ -688,4 +731,51 @@ def get_receptionists_by_shift(receptionists, day, shift_type):
         if shift == shift_type:
             selected_receptionists.append(receptionist)
 
-    return selected_receptionists           
+    return selected_receptionists   
+
+
+
+def chef_schedule(chefs):
+
+    chefs_per_day = 2
+
+    for day in range(1, 31):
+
+        first_chef_index = ((day - 1) * chefs_per_day) % len(chefs)
+
+        for chef in chefs:
+            chef.shift[day] = "OFF"
+
+        for i in range(chefs_per_day):
+
+            chef_index = (
+                first_chef_index + i
+            ) % len(chefs)
+
+            chefs[chef_index].shift[day] = "WORK"
+
+
+
+def kitchen_assistant_schedule(kitchen_assistants):
+
+    group_size = 5
+    
+    group_a = kitchen_assistants[:group_size]
+    group_b = kitchen_assistants[group_size:]
+
+    for day in range(1, 31):
+
+        if day % 2 == 1:
+            working_group = group_a
+            off_group = group_b
+        else:
+            working_group = group_b
+            off_group = group_a
+
+        for assistant in working_group:
+            assistant.shift[day] = "WORK"
+
+        for assistant in off_group:
+            assistant.shift[day] = "OFF"
+
+
